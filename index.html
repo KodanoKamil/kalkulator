@@ -166,6 +166,7 @@ header {
 .select-group { display: flex; flex-direction: column; gap: 6px; }
 .select-row { display: flex; flex-direction: column; gap: 3px; }
 .select-mini-label { font-size: 11px; color: var(--gray); font-weight: 600; }
+.select-hint { font-size: 11px; color: var(--orange); font-style: italic; padding-left: 2px; min-height: 14px; display: block; }
 select {
   width: 100%;
   padding: 8px 10px;
@@ -596,7 +597,7 @@ footer {
   </div>
   <div class="header-right">Data: <span class="header-date" id="headerDate"></span></div>
 </header>
-<div class="app-version">v1.11</div>
+<div class="app-version">v1.15</div>
 
 <div class="main-grid" id="mainGrid"></div>
 <div id="printOnly"></div>
@@ -738,6 +739,20 @@ const KATALOG = {
 
 const PAKIETY = ['Srebrny', 'Złoty', 'Platynowy', 'Diamentowy'];
 
+const PAKIETY_OPISY = {
+  'Srebrny':    'standard',
+  'Złoty':      '25% cieńsze',
+  'Platynowy':  '35% cieńsze',
+  'Diamentowy': '60% cieńsze',
+};
+
+const POWLOKI_OPISY = {
+  'Clear View':         'Antyrefleks',
+  'Clear View Premium': 'Antyrefleks + Łatwe Czyszczenie',
+  'Smart View':         'Antyrefleks + Łatwe Czyszczenie + Filtr Światła Niebieskiego',
+  'Drive View':         'Antyrefleks + Łatwe Czyszczenie + Filtr dla Kierowców',
+};
+
 const DODATKI = [
   { id: 'barwienie',   nazwa: 'Barwienie',   cena: 119.99 },
   { id: 'polaryzacja', nazwa: 'Polaryzacja', cena: 199.99 },
@@ -759,10 +774,10 @@ const PROMOCJE = [
 ];
 
 const UBEZPIECZENIA = [
-  { id: 'brak',    nazwa: 'Brak ubezpieczenia',  stawka: 0 },
-  { id: 'bo12',    nazwa: 'BO12 (15%)',           stawka: 0.15 },
-  { id: 'gdw24',   nazwa: 'GDW24 (20%)',          stawka: 0.20 },
-  { id: 'bo_gdw',  nazwa: 'BO + GDW (25%)',       stawka: 0.25 },
+  { id: 'brak',    nazwa: 'Brak ubezpieczenia',  stawka: 0,    nazwaPDF: '' },
+  { id: 'bo12',    nazwa: 'BO12 (15%)',           stawka: 0.15, nazwaPDF: 'Bezpieczne Okulary' },
+  { id: 'gdw24',   nazwa: 'GDW24 (20%)',          stawka: 0.20, nazwaPDF: 'Gwarancja Dobrego Widzenia' },
+  { id: 'bo_gdw',  nazwa: 'BO + GDW (25%)',       stawka: 0.25, nazwaPDF: 'Bezpieczne Okulary + Gwarancja Dobrego Widzenia' },
 ];
 
 // ============================================================
@@ -965,6 +980,7 @@ function cardHTML(i) {
               <option value="">— wybierz pakiet —</option>
               ${pakOptions}
             </select>
+            <span class="select-hint">${state[i].lensPakiet ? PAKIETY_OPISY[state[i].lensPakiet] || '' : ''}</span>
           </div>
           <div class="select-row">
             <span class="select-mini-label">Powłoka</span>
@@ -972,6 +988,7 @@ function cardHTML(i) {
               <option value="">— wybierz powłokę —</option>
               ${powOptions}
             </select>
+            <span class="select-hint">${state[i].lensPowloka ? POWLOKI_OPISY[state[i].lensPowloka] || '' : ''}</span>
           </div>
           ${lensTag}
         </div>
@@ -1238,7 +1255,8 @@ function generatePDF() {
     col += `<div class="p-sec-head">SOCZEWKI</div>`;
     if (s.lensKat && s.lensPakiet && s.lensPowloka) {
       col += `<div class="p-row p-indent"><span>${s.lensKat}</span></div>
-        <div class="p-row p-indent"><span>${s.lensPakiet} / ${s.lensPowloka}</span></div>
+        <div class="p-row p-indent"><span>${s.lensPakiet} <span style="color:#888;font-weight:400">(${PAKIETY_OPISY[s.lensPakiet] || ''})</span></span></div>
+        <div class="p-row p-indent"><span>${s.lensPowloka} <span style="color:#888;font-weight:400;font-size:7pt">(${POWLOKI_OPISY[s.lensPowloka] || ''})</span></span></div>
         <div class="p-row"><span>1 soczewka</span><span class="p-val">${fmt(s.lensCena)}</span></div>
         <div class="p-row"><span>Para (×2)</span><span class="p-val">${fmt(c.socz2)}</span></div>`;
     } else {
@@ -1262,8 +1280,8 @@ function generatePDF() {
       col += `<div class="p-row p-disc"><span>${promoNazwa}</span><span class="p-val">${fmt(c.rabatKwota)}</span></div>`;
     }
     if (s.ubezpieczenie !== 'brak') {
-      const ubezNazwa = UBEZPIECZENIA.find(u => u.id === s.ubezpieczenie).nazwa;
-      col += `<div class="p-row p-ins"><span>${ubezNazwa}</span><span class="p-val">${fmt(c.ubezKwota)}</span></div>`;
+      const ubezObj = UBEZPIECZENIA.find(u => u.id === s.ubezpieczenie);
+      col += `<div class="p-row p-ins"><span>${ubezObj.nazwaPDF}</span><span class="p-val">${fmt(c.ubezKwota)}</span></div>`;
     }
 
     col += `</div>`; // koniec .p-content
