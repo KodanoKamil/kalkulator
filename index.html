@@ -752,6 +752,7 @@ const MONTAZ_OPCJE = [
 const PROMOCJE = [
   { id: 'brak',    nazwa: 'Brak promocji',              opis: '' },
   { id: 'p70',     nazwa: '70% rabatu na okulary',       opis: '(oprawka + soczewki + dodatki × 0,30)' },
+  { id: 'p60',     nazwa: '60% rabatu na okulary',       opis: '(oprawka + soczewki + dodatki × 0,40)' },
   { id: 'p50',     nazwa: '50% rabatu na soczewki',      opis: '(soczewki + dodatki × 0,50)' },
 ];
 
@@ -1010,6 +1011,10 @@ function calc(s) {
     // 70% rabatu na oprawka+soczewki+dodatki (nie na montaz)
     poRabacie = montazCena + rabatBaza * 0.30;
     rabatKwota = rabatBaza * 0.70;
+  } else if (s.promocja === 'p60') {
+    // 60% rabatu na oprawka+soczewki+dodatki (nie na montaz)
+    poRabacie = montazCena + rabatBaza * 0.40;
+    rabatKwota = rabatBaza * 0.60;
   } else if (s.promocja === 'p50') {
     // 50% rabatu tylko na soczewki + dodatki
     const socz2rabat = (socz2 + datki2) * 0.50;
