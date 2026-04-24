@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Cen Okularów – Kodano Optyk</title>
+<style>
+:root {
+  --orange: #E7511E;
+  --orange-light: #fff3ee;
+  --orange-hover: #c94018;
+  --dark: #212529;
+  --gray: #6c757d;
+  --gray-light: #adb5bd;
+  --light: #f8f9fa;
+  --border: #dee2e6;
+  --white: #ffffff;
+  --green: #198754;
+  --green-light: #d1e7dd;
+  --blue: #0d6efd;
+  --shadow: 0 2px 12px rgba(0,0,0,0.09);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #eef0f3;
+  color: var(--dark);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: var(--white);
+  border-bottom: 3px solid var(--orange);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+.header-left { display: flex; align-items: center; gap: 18px; }
+.header-title { font-size: 17px; font-weight: 700; color: var(--dark); }
+.header-sub { font-size: 12px; color: var(--gray); margin-top: 1px; }
+.header-right { font-size: 12px; color: var(--gray); }
+.header-date { font-weight: 600; color: var(--dark); }
+
+/* Logo SVG */
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+.logo-wrap svg {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+/* ===== GRID ===== */
+.main-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 20px;
+  max-width: 1380px;
+  margin: 0 auto;
+}
+
+/* ===== OFFER CARD ===== */
+.offer-card {
+  background: var(--white);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.offer-header {
+  background: var(--orange);
+  color: white;
+  padding: 13px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.offer-num {
+  background: rgba(255,255,255,0.25);
+  border-radius: 20px;
+  padding: 2px 12px;
+  font-size: 13px;
+}
+.offer-body { padding: 16px; flex: 1; }
+
+/* ===== SECTION ===== */
+.section { margin-bottom: 15px; }
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--gray);
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ===== RADIO OPTIONS ===== */
+.radio-group { display: flex; flex-direction: column; gap: 5px; }
+.radio-opt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+.radio-opt:hover { border-color: var(--orange); background: var(--orange-light); }
+.radio-opt.active { border-color: var(--orange); background: var(--orange-light); }
+.radio-opt input[type=radio] { accent-color: var(--orange); width: 15px; height: 15px; flex-shrink: 0; }
+.opt-text { flex: 1; font-size: 13px; line-height: 1.3; }
+.opt-price { font-weight: 700; color: var(--orange); font-size: 13px; white-space: nowrap; }
+
+/* ===== INPUT ===== */
+.input-wrap { position: relative; }
+.price-input {
+  width: 100%;
+  padding: 8px 40px 8px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.15s;
+  color: var(--dark);
+}
+.price-input:focus { outline: none; border-color: var(--orange); }
+.price-input:disabled { background: #f0f0f0; color: #aaa; cursor: not-allowed; border-color: var(--border); }
+.input-suffix {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+/* ===== SELECTS ===== */
+.select-group { display: flex; flex-direction: column; gap: 6px; }
+.select-row { display: flex; flex-direction: column; gap: 3px; }
+.select-mini-label { font-size: 11px; color: var(--gray); font-weight: 600; }
+select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  background: white;
+  cursor: pointer;
+  color: var(--dark);
+  transition: border-color 0.15s;
+  appearance: auto;
+}
+select:focus { outline: none; border-color: var(--orange); }
+select:disabled { background: var(--light); cursor: not-allowed; color: var(--gray); }
+
+.lens-price-tag {
+  background: var(--light);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--gray);
+  text-align: center;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lens-price-tag.active { color: var(--orange); font-weight: 700; font-size: 13px; background: var(--orange-light); }
+
+/* ===== CHECKBOXES ===== */
+.check-grid { display: flex; flex-direction: column; gap: 5px; }
+.check-opt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 11px;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+.check-opt:hover { border-color: var(--orange); background: var(--orange-light); }
+.check-opt.active { border-color: var(--orange); background: var(--orange-light); }
+.check-opt.disabled { opacity: 0.38; cursor: not-allowed; pointer-events: none; background: #fafafa; }
+.check-opt.disabled:hover { border-color: var(--border); background: #fafafa; }
+.check-box {
+  width: 16px; height: 16px; flex-shrink: 0;
+  border: 2px solid var(--gray-light);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--white);
+}
+.check-opt.active .check-box {
+  background: var(--orange); border-color: var(--orange);
+}
+.check-box::after {
+  content: '';
+  display: none;
+  width: 9px; height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+}
+.check-opt.active .check-box::after { display: block; }
+.check-text { flex: 1; font-size: 13px; }
+.check-price { font-size: 12px; color: var(--orange); font-weight: 700; white-space: nowrap; }
+
+/* ===== SUMMARY BOX ===== */
+.summary-box {
+  background: linear-gradient(135deg, #fafafa 0%, var(--light) 100%);
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 6px;
+  border: 1px solid var(--border);
+}
+.sum-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  font-size: 12.5px;
+  color: var(--gray);
+}
+.sum-row.indent { padding-left: 12px; font-size: 12px; }
+.sum-row.discount { color: var(--green); font-weight: 600; }
+.sum-row.insurance-row { color: var(--blue); font-weight: 600; }
+.sum-divider { border: none; border-top: 1.5px solid var(--border); margin: 7px 0; }
+.sum-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 4px;
+}
+.sum-total-label { font-size: 14px; font-weight: 700; color: var(--dark); }
+.sum-total-price { font-size: 22px; font-weight: 800; color: var(--orange); letter-spacing: -0.5px; }
+.sum-empty { text-align: center; color: var(--gray-light); font-size: 12px; padding: 8px 0; }
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  bottom: 0;
+  z-index: 200;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+}
+.btn {
+  padding: 11px 26px;
+  border-radius: 9px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.btn-primary { background: var(--orange); color: white; }
+.btn-primary:hover { background: var(--orange-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(231,81,30,0.35); }
+.btn-secondary { background: var(--light); color: var(--dark); border: 1.5px solid var(--border); }
+.btn-secondary:hover { background: var(--border); }
+.btn svg { width: 16px; height: 16px; }
+
+/* ===== PROMO BADGE ===== */
+.promo-badge {
+  display: inline-flex;
+  align-items: center;
+  background: var(--green-light);
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+@media (max-width: 1050px) {
+  .main-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .main-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== DRUK / PDF ===== */
+#printOnly { display: none; }
+
+@media print {
+  @page { size: A4 landscape; margin: 8mm; }
+  body { background: white !important; }
+  header, footer, #mainGrid { display: none !important; }
+
+  #printOnly {
+    display: block !important;
+    width: 100%;
+    height: 100%;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 8pt;
+    color: #000;
+  }
+
+  /* Dokument jako kolumna flex – wypełnia całą stronę */
+  .p-doc {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Nagłówek – logo + data */
+  .p-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 3mm;
+    border-bottom: 1.5pt solid #000;
+    margin-bottom: 4mm;
+    flex-shrink: 0;
+  }
+  .p-header svg { height: 13mm; width: auto; display: block; }
+  .p-header-right { text-align: right; font-size: 8pt; line-height: 1.5; }
+  .p-header-title { font-size: 7pt; color: #555; margin-top: 1mm; }
+
+  /* Siatka 3 kolumn – rośnie by wypełnić stronę */
+  .p-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5mm;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Kolumna oferty */
+  .p-col {
+    border: 1pt solid #888;
+    border-radius: 4mm;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .p-col-head {
+    text-align: center;
+    font-weight: 900;
+    font-size: 11pt;
+    padding: 3.5mm 2mm;
+    letter-spacing: 2px;
+    border-bottom: 1.5pt solid #000;
+  }
+
+  /* Treść kolumny – rośnie by zepchnąć sumę na dół */
+  .p-content { flex: 1; }
+
+  .p-sec-head {
+    font-size: 7pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2mm 3mm 1.5mm;
+    border-top: 0.5pt solid #bbb;
+    border-bottom: 0.5pt solid #bbb;
+    color: #555;
+    margin-top: 0.5mm;
+  }
+
+  .p-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 1.8mm 3mm;
+    font-size: 9pt;
+    border-bottom: 0.5pt solid #e8e8e8;
+  }
+  .p-row .p-val { font-weight: 700; white-space: nowrap; margin-left: 2mm; }
+  .p-row.p-indent { padding-left: 6mm; font-size: 8.5pt; color: #444; }
+  .p-row.p-sub { color: #555; font-size: 8.5pt; }
+  .p-row.p-disc { font-weight: 700; }
+  .p-row.p-disc .p-val::before { content: '− '; }
+  .p-row.p-ins { font-weight: 700; }
+  .p-row.p-ins .p-val::before { content: '+ '; }
+
+  /* Suma – przyklejona na dole kolumny */
+  .p-total {
+    border-top: 2pt solid #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4mm 3mm 3.5mm;
+    flex-shrink: 0;
+  }
+  .p-total-label {
+    font-size: 8pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .p-total-val { font-size: 18pt; font-weight: 900; letter-spacing: -0.5px; }
+
+  /* Stopka */
+  .p-footer {
+    margin-top: 3mm;
+    font-size: 6pt;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+    border-top: 0.5pt solid #ccc;
+    padding-top: 2mm;
+    flex-shrink: 0;
+  }
+  .p-empty { color: #999; font-style: italic; text-align: center; padding: 3mm 2mm; font-size: 7.5pt; }
+}
+/* ===== EKRAN LOGOWANIA ===== */
+#loginScreen {
+  position: fixed;
+  inset: 0;
+  background: #eef0f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+#loginScreen.hidden { display: none; }
+.login-box {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.13);
+  padding: 40px 44px 36px;
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.login-logo {
+  margin-bottom: 4px;
+}
+.login-logo svg { height: 32px; width: auto; }
+.login-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.4;
+}
+.login-sub {
+  font-size: 12px;
+  color: var(--gray);
+  text-align: center;
+  margin-top: -12px;
+}
+.login-input-wrap {
+  width: 100%;
+  position: relative;
+}
+.login-input {
+  width: 100%;
+  padding: 10px 42px 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--dark);
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+  letter-spacing: 2px;
+}
+.login-input:focus { border-color: var(--orange); }
+.login-input.error { border-color: #dc3545; }
+.login-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--gray);
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.login-eye:hover { color: var(--dark); }
+.login-err {
+  font-size: 12px;
+  color: #dc3545;
+  text-align: center;
+  margin-top: -12px;
+  min-height: 16px;
+}
+.login-btn {
+  width: 100%;
+  padding: 11px;
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.login-btn:hover { background: var(--orange-hover); }
+</style>
+</head>
+<body>
+
+<!-- EKRAN LOGOWANIA -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 197 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M186.319 14.51C190.529 14.51 193.939 17.92 193.939 22.13C193.939 26.34 190.529 29.75 186.319 29.75C182.109 29.75 178.699 26.34 178.699 22.13C178.699 17.92 182.109 14.51 186.319 14.51Z" fill="#E7511E"/>
+        <path d="M24.2595 9.54001H15.8995L7.36953 20.09V0H0.519531V34.51H7.36953V29.13L9.82953 26.3L16.4095 34.51H24.6695L14.1695 21.23L24.2595 9.54001Z" fill="#212529"/>
+        <path d="M46.8604 10.7001C44.7604 9.53007 42.4804 8.94006 40.0104 8.94006C37.5404 8.94006 35.2704 9.53007 33.1804 10.7001C31.0904 11.8701 29.4404 13.4601 28.2304 15.4701C27.0104 17.4801 26.4004 19.6501 26.4004 22.0001C26.4004 24.3501 27.0104 26.5601 28.2304 28.5701C29.4504 30.5801 31.1004 32.1701 33.1804 33.3401C35.2604 34.5101 37.5404 35.1001 40.0104 35.1001C42.4804 35.1001 44.7604 34.5201 46.8604 33.3401C48.9604 32.1701 50.6304 30.5801 51.8604 28.5701C53.0904 26.5601 53.7104 24.3701 53.7104 22.0001C53.7104 19.6301 53.0904 17.4801 51.8604 15.4701C50.6304 13.4601 48.9604 11.8701 46.8604 10.7001ZM45.9904 25.6601C45.3804 26.7601 44.5504 27.6201 43.5004 28.2401C42.4504 28.8701 41.2904 29.1801 40.0104 29.1801C38.7304 29.1801 37.5204 28.8701 36.4704 28.2401C35.4204 27.6201 34.6004 26.7601 34.0004 25.6901C33.4104 24.6101 33.1104 23.3901 33.1104 22.0101C33.1104 20.6301 33.4104 19.5101 34.0204 18.4301C34.6304 17.3501 35.4704 16.5001 36.5304 15.8701C37.6004 15.2501 38.7504 14.9301 40.0004 14.9301C41.2504 14.9301 42.4404 15.2401 43.4904 15.8701C44.5404 16.4901 45.3704 17.3501 45.9804 18.4301C46.5904 19.5101 46.8904 20.7101 46.8904 22.0101C46.8904 23.3101 46.5904 24.5701 45.9804 25.6601H45.9904Z" fill="#212529"/>
+        <path d="M77.7202 12.01C77.0202 11.1 76.0102 10.34 74.6802 9.75C73.3602 9.16 71.8302 8.86002 70.0902 8.86002C67.5002 8.86002 65.2602 9.44001 63.3602 10.6C61.4602 11.76 60.0002 13.33 59.0002 15.33C58.0002 17.32 57.4902 19.54 57.4902 21.97C57.4902 24.4 57.9902 26.62 59.0002 28.61C60.0002 30.61 61.4602 32.18 63.3602 33.34C65.2602 34.5 67.5102 35.07 70.0902 35.07C71.7602 35.07 73.3102 34.76 74.7202 34.14C76.1402 33.52 77.1302 32.81 77.7102 32.02V34.53H84.4702V0.0100098H77.7102V12.02L77.7202 12.01ZM76.1402 27.14C74.9102 28.4 73.2302 29.04 71.1002 29.04C68.9702 29.04 67.3602 28.37 66.1002 27.03C64.8402 25.69 64.2002 24 64.2002 21.96C64.2002 19.92 64.8202 18.15 66.0502 16.82C67.2802 15.49 68.9602 14.83 71.1002 14.83C73.2402 14.83 74.8702 15.49 76.1202 16.82C77.3702 18.15 77.9902 19.86 77.9902 21.96C77.9902 24.06 77.3702 25.88 76.1402 27.14Z" fill="#212529"/>
+        <path d="M108.65 12.0101C107.95 11.1001 106.94 10.3401 105.61 9.75009C104.29 9.16009 102.76 8.86011 101.02 8.86011C98.4299 8.86011 96.1899 9.4401 94.2899 10.6001C92.3899 11.7601 90.9299 13.3301 89.9299 15.3301C88.9199 17.3201 88.4199 19.5401 88.4199 21.9701C88.4199 24.4001 88.9199 26.6201 89.9299 28.6101C90.9299 30.6101 92.3899 32.1801 94.2899 33.3401C96.1899 34.5001 98.4399 35.0701 101.02 35.0701C102.69 35.0701 104.24 34.7601 105.65 34.1401C107.06 33.5201 108.06 32.8101 108.64 32.0201V34.5301H115.4V9.4201H108.64V12.0201L108.65 12.0101ZM107.08 27.1401C105.85 28.4001 104.17 29.0401 102.04 29.0401C99.9099 29.0401 98.2999 28.3701 97.0399 27.0301C95.7799 25.6901 95.1399 24.0001 95.1399 21.9601C95.1399 19.9201 95.7599 18.1501 96.9899 16.8201C98.2199 15.4901 99.8999 14.8301 102.03 14.8301C104.16 14.8301 105.8 15.4901 107.05 16.8201C108.3 18.1501 108.92 19.8601 108.92 21.9601C108.92 24.0601 108.3 25.8801 107.07 27.1401H107.08Z" fill="#212529"/>
+        <path d="M132.811 8.95004C131.651 8.95004 130.451 9.20005 129.201 9.68005C127.951 10.1701 126.921 10.82 126.101 11.64V9.40002H119.301V34.51H126.101V21.22C126.041 18.78 126.511 17.07 127.521 16.08C128.521 15.09 129.651 14.59 130.901 14.59C134.131 14.59 135.741 16.28 135.741 19.66V34.5H142.721V19.66C142.721 16.22 141.941 13.57 140.371 11.72C138.801 9.86003 136.281 8.93005 132.821 8.93005L132.811 8.95004Z" fill="#212529"/>
+        <path d="M171.04 22.1301C171.04 19.9401 171.51 17.8601 172.34 15.9701C172.25 15.8001 172.16 15.6401 172.05 15.4701C170.82 13.4601 169.15 11.8701 167.05 10.7001C164.95 9.53007 162.67 8.94006 160.2 8.94006C157.73 8.94006 155.46 9.53007 153.37 10.7001C151.29 11.8701 149.63 13.4601 148.42 15.4701C147.2 17.4801 146.59 19.6501 146.59 22.0001C146.59 24.3501 147.2 26.5601 148.42 28.5701C149.64 30.5801 151.29 32.1701 153.37 33.3401C155.45 34.5101 157.73 35.1001 160.2 35.1001C162.67 35.1001 164.95 34.5201 167.05 33.3401C169.15 32.1701 170.81 30.5801 172.05 28.5701C172.13 28.4401 172.21 28.3001 172.28 28.1601C171.48 26.3101 171.03 24.2701 171.03 22.1201L171.04 22.1301ZM166.19 25.6601C165.58 26.7601 164.75 27.6201 163.7 28.2401C162.65 28.8601 161.49 29.1801 160.21 29.1801C158.93 29.1801 157.72 28.8701 156.67 28.2401C155.62 27.6201 154.8 26.7701 154.21 25.6901C153.62 24.6101 153.32 23.3901 153.32 22.0101C153.32 20.6301 153.63 19.5101 154.24 18.4301C154.85 17.3501 155.68 16.5001 156.75 15.8701C157.82 15.2501 158.97 14.9301 160.22 14.9301C161.47 14.9301 162.66 15.2401 163.71 15.8701C164.76 16.4901 165.59 17.3501 166.2 18.4301C166.81 19.5101 167.11 20.7001 167.11 22.0101C167.11 23.3101 166.81 24.5701 166.2 25.6601H166.19Z" fill="#212529"/>
+      </svg>
+    </div>
+    <div class="login-title">Kalkulator Cen Okularów</div>
+    <div class="login-sub">Podaj hasło aby kontynuować</div>
+    <div class="login-input-wrap">
+      <input class="login-input" id="loginInput" type="password" placeholder="Hasło"
+        onkeydown="if(event.key==='Enter') doLogin()">
+      <button class="login-eye" onclick="toggleLoginEye()" title="Pokaż/ukryj hasło">
+        <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+    <div class="login-err" id="loginErr"></div>
+    <button class="login-btn" onclick="doLogin()">Wejdź</button>
+  </div>
+</div>
+
+<header>
+  <div class="header-left">
+    <div class="logo-wrap">
+      <svg viewBox="0 0 197 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- orange dot -->
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M186.319 14.51C190.529 14.51 193.939 17.92 193.939 22.13C193.939 26.34 190.529 29.75 186.319 29.75C182.109 29.75 178.699 26.34 178.699 22.13C178.699 17.92 182.109 14.51 186.319 14.51Z" fill="#E7511E"/>
+        <!-- k -->
+        <path d="M24.2595 9.54001H15.8995L7.36953 20.09V0H0.519531V34.51H7.36953V29.13L9.82953 26.3L16.4095 34.51H24.6695L14.1695 21.23L24.2595 9.54001Z" fill="#212529"/>
+        <!-- o -->
+        <path d="M46.8604 10.7001C44.7604 9.53007 42.4804 8.94006 40.0104 8.94006C37.5404 8.94006 35.2704 9.53007 33.1804 10.7001C31.0904 11.8701 29.4404 13.4601 28.2304 15.4701C27.0104 17.4801 26.4004 19.6501 26.4004 22.0001C26.4004 24.3501 27.0104 26.5601 28.2304 28.5701C29.4504 30.5801 31.1004 32.1701 33.1804 33.3401C35.2604 34.5101 37.5404 35.1001 40.0104 35.1001C42.4804 35.1001 44.7604 34.5201 46.8604 33.3401C48.9604 32.1701 50.6304 30.5801 51.8604 28.5701C53.0904 26.5601 53.7104 24.3701 53.7104 22.0001C53.7104 19.6301 53.0904 17.4801 51.8604 15.4701C50.6304 13.4601 48.9604 11.8701 46.8604 10.7001ZM45.9904 25.6601C45.3804 26.7601 44.5504 27.6201 43.5004 28.2401C42.4504 28.8701 41.2904 29.1801 40.0104 29.1801C38.7304 29.1801 37.5204 28.8701 36.4704 28.2401C35.4204 27.6201 34.6004 26.7601 34.0004 25.6901C33.4104 24.6101 33.1104 23.3901 33.1104 22.0101C33.1104 20.6301 33.4104 19.5101 34.0204 18.4301C34.6304 17.3501 35.4704 16.5001 36.5304 15.8701C37.6004 15.2501 38.7504 14.9301 40.0004 14.9301C41.2504 14.9301 42.4404 15.2401 43.4904 15.8701C44.5404 16.4901 45.3704 17.3501 45.9804 18.4301C46.5904 19.5101 46.8904 20.7101 46.8904 22.0101C46.8904 23.3101 46.5904 24.5701 45.9804 25.6601H45.9904Z" fill="#212529"/>
+        <!-- d -->
+        <path d="M77.7202 12.01C77.0202 11.1 76.0102 10.34 74.6802 9.75C73.3602 9.16 71.8302 8.86002 70.0902 8.86002C67.5002 8.86002 65.2602 9.44001 63.3602 10.6C61.4602 11.76 60.0002 13.33 59.0002 15.33C58.0002 17.32 57.4902 19.54 57.4902 21.97C57.4902 24.4 57.9902 26.62 59.0002 28.61C60.0002 30.61 61.4602 32.18 63.3602 33.34C65.2602 34.5 67.5102 35.07 70.0902 35.07C71.7602 35.07 73.3102 34.76 74.7202 34.14C76.1402 33.52 77.1302 32.81 77.7102 32.02V34.53H84.4702V0.0100098H77.7102V12.02L77.7202 12.01ZM76.1402 27.14C74.9102 28.4 73.2302 29.04 71.1002 29.04C68.9702 29.04 67.3602 28.37 66.1002 27.03C64.8402 25.69 64.2002 24 64.2002 21.96C64.2002 19.92 64.8202 18.15 66.0502 16.82C67.2802 15.49 68.9602 14.83 71.1002 14.83C73.2402 14.83 74.8702 15.49 76.1202 16.82C77.3702 18.15 77.9902 19.86 77.9902 21.96C77.9902 24.06 77.3702 25.88 76.1402 27.14Z" fill="#212529"/>
+        <!-- a -->
+        <path d="M108.65 12.0101C107.95 11.1001 106.94 10.3401 105.61 9.75009C104.29 9.16009 102.76 8.86011 101.02 8.86011C98.4299 8.86011 96.1899 9.4401 94.2899 10.6001C92.3899 11.7601 90.9299 13.3301 89.9299 15.3301C88.9199 17.3201 88.4199 19.5401 88.4199 21.9701C88.4199 24.4001 88.9199 26.6201 89.9299 28.6101C90.9299 30.6101 92.3899 32.1801 94.2899 33.3401C96.1899 34.5001 98.4399 35.0701 101.02 35.0701C102.69 35.0701 104.24 34.7601 105.65 34.1401C107.06 33.5201 108.06 32.8101 108.64 32.0201V34.5301H115.4V9.4201H108.64V12.0201L108.65 12.0101ZM107.08 27.1401C105.85 28.4001 104.17 29.0401 102.04 29.0401C99.9099 29.0401 98.2999 28.3701 97.0399 27.0301C95.7799 25.6901 95.1399 24.0001 95.1399 21.9601C95.1399 19.9201 95.7599 18.1501 96.9899 16.8201C98.2199 15.4901 99.8999 14.8301 102.03 14.8301C104.16 14.8301 105.8 15.4901 107.05 16.8201C108.3 18.1501 108.92 19.8601 108.92 21.9601C108.92 24.0601 108.3 25.8801 107.07 27.1401H107.08Z" fill="#212529"/>
+        <!-- n -->
+        <path d="M132.811 8.95004C131.651 8.95004 130.451 9.20005 129.201 9.68005C127.951 10.1701 126.921 10.82 126.101 11.64V9.40002H119.301V34.51H126.101V21.22C126.041 18.78 126.511 17.07 127.521 16.08C128.521 15.09 129.651 14.59 130.901 14.59C134.131 14.59 135.741 16.28 135.741 19.66V34.5H142.721V19.66C142.721 16.22 141.941 13.57 140.371 11.72C138.801 9.86003 136.281 8.93005 132.821 8.93005L132.811 8.95004Z" fill="#212529"/>
+        <!-- o -->
+        <path d="M171.04 22.1301C171.04 19.9401 171.51 17.8601 172.34 15.9701C172.25 15.8001 172.16 15.6401 172.05 15.4701C170.82 13.4601 169.15 11.8701 167.05 10.7001C164.95 9.53007 162.67 8.94006 160.2 8.94006C157.73 8.94006 155.46 9.53007 153.37 10.7001C151.29 11.8701 149.63 13.4601 148.42 15.4701C147.2 17.4801 146.59 19.6501 146.59 22.0001C146.59 24.3501 147.2 26.5601 148.42 28.5701C149.64 30.5801 151.29 32.1701 153.37 33.3401C155.45 34.5101 157.73 35.1001 160.2 35.1001C162.67 35.1001 164.95 34.5201 167.05 33.3401C169.15 32.1701 170.81 30.5801 172.05 28.5701C172.13 28.4401 172.21 28.3001 172.28 28.1601C171.48 26.3101 171.03 24.2701 171.03 22.1201L171.04 22.1301ZM166.19 25.6601C165.58 26.7601 164.75 27.6201 163.7 28.2401C162.65 28.8601 161.49 29.1801 160.21 29.1801C158.93 29.1801 157.72 28.8701 156.67 28.2401C155.62 27.6201 154.8 26.7701 154.21 25.6901C153.62 24.6101 153.32 23.3901 153.32 22.0101C153.32 20.6301 153.63 19.5101 154.24 18.4301C154.85 17.3501 155.68 16.5001 156.75 15.8701C157.82 15.2501 158.97 14.9301 160.22 14.9301C161.47 14.9301 162.66 15.2401 163.71 15.8701C164.76 16.4901 165.59 17.3501 166.2 18.4301C166.81 19.5101 167.11 20.7001 167.11 22.0101C167.11 23.3101 166.81 24.5701 166.2 25.6601H166.19Z" fill="#212529"/>
+      </svg>
+    </div>
+    <div>
+      <div class="header-title">Kalkulator Cen Okularów</div>
+      <div class="header-sub">Narzędzie dla pracowników salonu</div>
+    </div>
+  </div>
+  <div class="header-right">Data: <span class="header-date" id="headerDate"></span></div>
+</header>
+
+<div class="main-grid" id="mainGrid"></div>
+<div id="printOnly"></div>
+
+<footer>
+  <button class="btn btn-secondary" onclick="resetAll()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    Resetuj wszystkie
+  </button>
+  <button class="btn btn-primary" onclick="generatePDF()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Drukuj / Pobierz PDF
+  </button>
+</footer>
+
+<script>
+// ============================================================
+//  DANE KATALOGU (ceny za 1 soczewkę)
+// ============================================================
+const KATALOG = {
+  'Magazynowe': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 249.99, 'Clear View Premium': 369.98, 'Smart View': 468.98 },
+      'Złoty':      { 'Clear View': 399.99, 'Clear View Premium': 519.98, 'Smart View': 619.98 },
+      'Platynowy':  { 'Clear View': 499.99, 'Clear View Premium': 619.98, 'Smart View': 719.98 },
+      'Diamentowy': { 'Clear View': 799.99, 'Clear View Premium': 919.98, 'Smart View': 1019.98 },
+    }
+  },
+  'Jednoogniskowe SV Individual': {
+    powloki: ['Clear View Premium', 'Smart View', 'Drive View'],
+    ceny: {
+      'Srebrny':    { 'Clear View Premium': 579.98, 'Smart View': 799.97, 'Drive View': 899.96 },
+      'Złoty':      { 'Clear View Premium': 729.98, 'Smart View': 949.97, 'Drive View': 1049.96 },
+      'Platynowy':  { 'Clear View Premium': 829.98, 'Smart View': 1049.97, 'Drive View': 1149.96 },
+      'Diamentowy': { 'Clear View Premium': 1129.98, 'Smart View': 1349.97, 'Drive View': 1449.96 },
+    }
+  },
+  'Progresywne Optimal': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View', 'Drive View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 599.99, 'Clear View Premium': 719.98, 'Smart View': 819.98, 'Drive View': 919.97 },
+      'Złoty':      { 'Clear View': 749.99, 'Clear View Premium': 869.98, 'Smart View': 969.98, 'Drive View': 1069.97 },
+      'Platynowy':  { 'Clear View': 849.99, 'Clear View Premium': 969.98, 'Smart View': 1069.98, 'Drive View': 1169.97 },
+      'Diamentowy': { 'Clear View': 1149.99, 'Clear View Premium': 1269.98, 'Smart View': 1369.98, 'Drive View': 1469.97 },
+    }
+  },
+  'Progresywne Perfect': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View', 'Drive View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 1299.99, 'Clear View Premium': 1419.98, 'Smart View': 1519.98, 'Drive View': 1619.97 },
+      'Złoty':      { 'Clear View': 1449.99, 'Clear View Premium': 1569.98, 'Smart View': 1669.98, 'Drive View': 1769.97 },
+      'Platynowy':  { 'Clear View': 1549.99, 'Clear View Premium': 1669.98, 'Smart View': 1769.98, 'Drive View': 1869.97 },
+      'Diamentowy': { 'Clear View': 1849.99, 'Clear View Premium': 1969.98, 'Smart View': 2069.98, 'Drive View': 2169.97 },
+    }
+  },
+  'Progresywne Drive': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View', 'Drive View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 1299.99, 'Clear View Premium': 1419.98, 'Smart View': 1519.98, 'Drive View': 1619.97 },
+      'Złoty':      { 'Clear View': 1449.99, 'Clear View Premium': 1569.98, 'Smart View': 1669.98, 'Drive View': 1769.97 },
+      'Platynowy':  { 'Clear View': 1549.99, 'Clear View Premium': 1668.98, 'Smart View': 1769.98, 'Drive View': 1869.97 },
+      'Diamentowy': { 'Clear View': 1849.99, 'Clear View Premium': 1969.98, 'Smart View': 2069.98, 'Drive View': 2169.97 },
+    }
+  },
+  'Progresywne Individual': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View', 'Drive View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 1999.99, 'Clear View Premium': 2119.98, 'Smart View': 2219.98, 'Drive View': 2319.97 },
+      'Złoty':      { 'Clear View': 2149.99, 'Clear View Premium': 2269.98, 'Smart View': 2369.98, 'Drive View': 2469.97 },
+      'Platynowy':  { 'Clear View': 2249.99, 'Clear View Premium': 2369.98, 'Smart View': 2469.98, 'Drive View': 2569.97 },
+      'Diamentowy': { 'Clear View': 2549.99, 'Clear View Premium': 2669.98, 'Smart View': 2769.98, 'Drive View': 2869.97 },
+    }
+  },
+  'Progresywne DELUX': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View', 'Drive View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 2699.99, 'Clear View Premium': 2819.98, 'Smart View': 2919.98, 'Drive View': 3019.97 },
+      'Złoty':      { 'Clear View': 2849.99, 'Clear View Premium': 2969.98, 'Smart View': 3069.98, 'Drive View': 3169.97 },
+      'Platynowy':  { 'Clear View': 2949.99, 'Clear View Premium': 3069.98, 'Smart View': 3169.98, 'Drive View': 3269.97 },
+      'Diamentowy': { 'Clear View': 3249.99, 'Clear View Premium': 3369.98, 'Smart View': 3469.98, 'Drive View': 3569.97 },
+    }
+  },
+  'Progresywne Individual Parabolic': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View', 'Drive View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 3399.99, 'Clear View Premium': 3519.98, 'Smart View': 3619.98, 'Drive View': 3719.97 },
+      'Złoty':      { 'Clear View': 3549.99, 'Clear View Premium': 3669.98, 'Smart View': 3769.98, 'Drive View': 3869.97 },
+      'Platynowy':  { 'Clear View': 3649.99, 'Clear View Premium': 3769.98, 'Smart View': 3869.98, 'Drive View': 3969.97 },
+      'Diamentowy': { 'Clear View': 3949.99, 'Clear View Premium': 4069.98, 'Smart View': 4169.98, 'Drive View': 4269.97 },
+    }
+  },
+  'Biurowe ProOffice': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 499.99, 'Clear View Premium': 619.98, 'Smart View': 719.98 },
+      'Złoty':      { 'Clear View': 649.99, 'Clear View Premium': 768.98, 'Smart View': 868.98 },
+      'Platynowy':  { 'Clear View': 749.99, 'Clear View Premium': 868.99, 'Smart View': 968.99 },
+      'Diamentowy': { 'Clear View': 1049.99, 'Clear View Premium': 1168.99, 'Smart View': 1268.99 },
+    }
+  },
+  'Biurowe Office': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 499.99, 'Clear View Premium': 618.99, 'Smart View': 718.99 },
+      'Złoty':      { 'Clear View': 649.99, 'Clear View Premium': 768.99, 'Smart View': 868.99 },
+      'Platynowy':  { 'Clear View': 749.99, 'Clear View Premium': 868.99, 'Smart View': 968.99 },
+      'Diamentowy': { 'Clear View': 1049.99, 'Clear View Premium': 1168.99, 'Smart View': 1268.99 },
+    }
+  },
+  'Relaksacyjne RELAX': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View', 'Drive View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 499.99, 'Clear View Premium': 618.99, 'Smart View': 718.99, 'Drive View': 818.98 },
+      'Złoty':      { 'Clear View': 649.99, 'Clear View Premium': 768.99, 'Smart View': 868.99, 'Drive View': 968.98 },
+      'Platynowy':  { 'Clear View': 749.99, 'Clear View Premium': 868.99, 'Smart View': 968.99, 'Drive View': 1068.98 },
+      'Diamentowy': { 'Clear View': 1049.99, 'Clear View Premium': 1168.99, 'Smart View': 1268.99, 'Drive View': 1368.98 },
+    }
+  },
+  'Bifokalne': {
+    powloki: ['Clear View', 'Clear View Premium', 'Smart View', 'Drive View'],
+    ceny: {
+      'Srebrny':    { 'Clear View': 599.99, 'Clear View Premium': 718.99, 'Smart View': 818.99, 'Drive View': 918.98 },
+      'Złoty':      { 'Clear View': 749.99, 'Clear View Premium': 868.99, 'Smart View': 968.99, 'Drive View': 1068.98 },
+      'Platynowy':  { 'Clear View': 849.99, 'Clear View Premium': 968.99, 'Smart View': 1068.99, 'Drive View': 1168.98 },
+      'Diamentowy': { 'Clear View': 1149.99, 'Clear View Premium': 1268.99, 'Smart View': 1368.99, 'Drive View': 1468.98 },
+    }
+  },
+  'MiYO (dziecięce)': {
+    powloki: ['Clear View Premium'],
+    ceny: {
+      'Srebrny':    { 'Clear View Premium': 999.99 },
+      'Złoty':      { 'Clear View Premium': 1199.99 },
+      'Platynowy':  { 'Clear View Premium': 1499.99 },
+      'Diamentowy': { 'Clear View Premium': 1699.99 },
+    }
+  }
+};
+
+const PAKIETY = ['Srebrny', 'Złoty', 'Platynowy', 'Diamentowy'];
+
+const DODATKI = [
+  { id: 'barwienie',   nazwa: 'Barwienie',   cena: 119.99 },
+  { id: 'polaryzacja', nazwa: 'Polaryzacja', cena: 199.99 },
+  { id: 'lustrzanki',  nazwa: 'Lustrzanki',  cena: 199.99 },
+  { id: 'fotochrom',   nazwa: 'ActiveTint',  cena: 329.99 },
+  { id: 'activetint',  nazwa: 'XTRactive',   cena: 749.99 },
+];
+
+const MONTAZ_OPCJE = [
+  { id: 'standard', nazwa: 'Montaż standardowy', cena: 59.99 },
+  { id: 'wlasna',   nazwa: 'Oprawa własna klienta', cena: 79.99 },
+];
+
+const PROMOCJE = [
+  { id: 'brak',    nazwa: 'Brak promocji',              opis: '' },
+  { id: 'p70',     nazwa: '70% rabatu na okulary',       opis: '(oprawka + soczewki + dodatki × 0,30)' },
+  { id: 'p50',     nazwa: '50% rabatu na soczewki',      opis: '(soczewki + dodatki × 0,50)' },
+];
+
+const UBEZPIECZENIA = [
+  { id: 'brak',    nazwa: 'Brak ubezpieczenia',  stawka: 0 },
+  { id: 'bo12',    nazwa: 'BO12 (15%)',           stawka: 0.15 },
+  { id: 'gdw24',   nazwa: 'GDW24 (20%)',          stawka: 0.20 },
+  { id: 'bo_gdw',  nazwa: 'BO + GDW (25%)',       stawka: 0.25 },
+];
+
+// ============================================================
+//  STAN APLIKACJI
+// ============================================================
+const state = [0, 1, 2].map(() => ({
+  montaz:         MONTAZ_OPCJE[0].id,
+  oprawka:        0,
+  lensKat:        '',
+  lensPakiet:     '',
+  lensPowloka:    '',
+  lensCena:       0,
+  dodatki:        new Set(),
+  promocja:       'brak',
+  ubezpieczenie:  'brak',
+}));
+
+// ============================================================
+//  LOGIKA DOSTĘPNOŚCI DODATKÓW
+// ============================================================
+function getDodatekAvailability(i) {
+  const s = state[i];
+  const kat     = s.lensKat;
+  const pakiet  = s.lensPakiet;
+  const powloka = s.lensPowloka;
+
+  // Domyślnie wszystko dostępne
+  const avail = {};
+  DODATKI.forEach(d => { avail[d.id] = true; });
+
+  // Jeśli soczewka nie jest w pełni wybrana — wszystko zablokowane
+  if (!kat || !pakiet || !powloka) {
+    DODATKI.forEach(d => { avail[d.id] = false; });
+    return avail;
+  }
+
+  // ── MAGAZYNOWE ──────────────────────────────────────────────
+  if (kat === 'Magazynowe') {
+    // XTRactive (id: activetint) — całkowicie niedostępne
+    avail['activetint'] = false;
+    // Lustrzanki — całkowicie niedostępne
+    avail['lustrzanki'] = false;
+    // Barwienie — tylko Srebrny/Złoty + Clear View
+    if (!(['Srebrny','Złoty'].includes(pakiet) && powloka === 'Clear View')) {
+      avail['barwienie'] = false;
+    }
+    // Polaryzacja — tylko Srebrny
+    if (pakiet !== 'Srebrny') {
+      avail['polaryzacja'] = false;
+    }
+    // ActiveTint (id: fotochrom) — tylko Srebrny/Złoty + Clear View Premium
+    if (!(['Srebrny','Złoty'].includes(pakiet) && powloka === 'Clear View Premium')) {
+      avail['fotochrom'] = false;
+    }
+  }
+
+  // ── JEDNOOGNISKOWE SV INDIVIDUAL ────────────────────────────
+  if (kat === 'Jednoogniskowe SV Individual') {
+    // Polaryzacja — tylko Srebrny, Złoty, Platynowy
+    if (!['Srebrny','Złoty','Platynowy'].includes(pakiet)) {
+      avail['polaryzacja'] = false;
+    }
+  }
+
+  // ── GLOBALNA ZASADA: tylko 1 dodatek naraz (wszystkie kategorie) ──
+  // Wyjątek: Lustrzanki + Barwienie mogą współistnieć we wszystkich kategoriach
+  if (s.dodatki.size > 0) {
+    const hasLustrzanki = s.dodatki.has('lustrzanki');
+    const hasBarwienie  = s.dodatki.has('barwienie');
+    DODATKI.forEach(d => {
+      if (!s.dodatki.has(d.id) && avail[d.id]) {
+        if (hasLustrzanki && d.id === 'barwienie') return; // Barwienie dostępne przy Lustrzankach
+        if (hasBarwienie  && d.id === 'lustrzanki') return; // Lustrzanki dostępne przy Barwieniu
+        avail[d.id] = false;
+      }
+    });
+  }
+
+  return avail;
+}
+
+// Usuwa wybrane dodatki które stały się niedostępne po zmianie soczewki
+function cleanupDodatki(i) {
+  const avail = getDodatekAvailability(i);
+  state[i].dodatki.forEach(id => {
+    if (!avail[id]) state[i].dodatki.delete(id);
+  });
+}
+
+// ============================================================
+//  BUDOWANIE HTML KART
+// ============================================================
+function buildCards() {
+  const grid = document.getElementById('mainGrid');
+  grid.innerHTML = '';
+  [0, 1, 2].forEach(i => {
+    const card = document.createElement('div');
+    card.className = 'offer-card';
+    card.id = `card-${i}`;
+    card.innerHTML = cardHTML(i);
+    grid.appendChild(card);
+  });
+}
+
+function cardHTML(i) {
+  const montazOpts = MONTAZ_OPCJE.map(o => `
+    <label class="radio-opt${state[i].montaz === o.id ? ' active' : ''}" onclick="setMontaz(${i},'${o.id}')">
+      <input type="radio" name="montaz_${i}" value="${o.id}"${state[i].montaz === o.id ? ' checked' : ''}>
+      <span class="opt-text">${o.nazwa}</span>
+      <span class="opt-price">${fmt(o.cena)}</span>
+    </label>`).join('');
+
+  const katOptions = Object.keys(KATALOG).map(k =>
+    `<option value="${k}"${state[i].lensKat === k ? ' selected' : ''}>${k}</option>`
+  ).join('');
+
+  const pakOptions = state[i].lensKat
+    ? PAKIETY.filter(p => KATALOG[state[i].lensKat].ceny[p])
+        .map(p => `<option value="${p}"${state[i].lensPakiet === p ? ' selected' : ''}>${p}</option>`).join('')
+    : '';
+
+  const powOptions = (state[i].lensKat && state[i].lensPakiet)
+    ? KATALOG[state[i].lensKat].powloki
+        .map(p => `<option value="${p}"${state[i].lensPowloka === p ? ' selected' : ''}>${p}</option>`).join('')
+    : '';
+
+  const lensTag = state[i].lensCena > 0
+    ? `<div class="lens-price-tag active">Para soczewek: ${fmt(state[i].lensCena * 2)}</div>`
+    : `<div class="lens-price-tag">— wybierz soczewkę —</div>`;
+
+  const avail = getDodatekAvailability(i);
+  const dodatOpts = DODATKI.map(d => {
+    const isAvail   = avail[d.id];
+    const isChecked = state[i].dodatki.has(d.id);
+    const cls = `check-opt${isChecked ? ' active' : ''}${!isAvail ? ' disabled' : ''}`;
+    const click = isAvail ? `onclick="toggleDodatek(${i},'${d.id}')"` : '';
+    return `
+    <div class="${cls}" ${click}>
+      <span class="check-box"></span>
+      <span class="check-text">${d.nazwa}</span>
+      <span class="check-price">+${fmt(d.cena)}/szt.</span>
+    </div>`;
+  }).join('');
+
+  const promoOpts = PROMOCJE.map(p => `
+    <label class="radio-opt${state[i].promocja === p.id ? ' active' : ''}" onclick="setPromo(${i},'${p.id}')">
+      <input type="radio" name="promo_${i}" value="${p.id}"${state[i].promocja === p.id ? ' checked' : ''}>
+      <span class="opt-text">${p.nazwa}${p.opis ? `<br><small style="color:#aaa">${p.opis}</small>` : ''}</span>
+    </label>`).join('');
+
+  const ubezOpts = UBEZPIECZENIA.map(u => `
+    <label class="radio-opt${state[i].ubezpieczenie === u.id ? ' active' : ''}" onclick="setUbez(${i},'${u.id}')">
+      <input type="radio" name="ubez_${i}" value="${u.id}"${state[i].ubezpieczenie === u.id ? ' checked' : ''}>
+      <span class="opt-text">${u.nazwa}</span>
+      ${u.stawka > 0 ? `<span class="opt-price">${(u.stawka*100).toFixed(0)}%</span>` : ''}
+    </label>`).join('');
+
+  return `
+    <div class="offer-header">
+      <span>Oferta</span>
+      <span class="offer-num">${i + 1}</span>
+    </div>
+    <div class="offer-body">
+
+      <div class="section">
+        <div class="section-label">Montaż</div>
+        <div class="radio-group">${montazOpts}</div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Oprawka</div>
+        <div class="input-wrap">
+          <input class="price-input" type="number" min="0" step="0.01" placeholder="0,00"
+            value="${state[i].montaz === 'wlasna' ? '' : (state[i].oprawka || '')}"
+            oninput="setOprawka(${i}, this.value)"
+            ${state[i].montaz === 'wlasna' ? 'disabled' : ''}>
+          <span class="input-suffix">zł</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Soczewki (cena za 1 szt.)</div>
+        <div class="select-group">
+          <div class="select-row">
+            <span class="select-mini-label">Rodzaj soczewki</span>
+            <select onchange="setLensKat(${i}, this.value)">
+              <option value="">— wybierz rodzaj —</option>
+              ${katOptions}
+            </select>
+          </div>
+          <div class="select-row">
+            <span class="select-mini-label">Pakiet</span>
+            <select onchange="setLensPakiet(${i}, this.value)"${!state[i].lensKat ? ' disabled' : ''}>
+              <option value="">— wybierz pakiet —</option>
+              ${pakOptions}
+            </select>
+          </div>
+          <div class="select-row">
+            <span class="select-mini-label">Powłoka</span>
+            <select onchange="setLensPowloka(${i}, this.value)"${!(state[i].lensKat && state[i].lensPakiet) ? ' disabled' : ''}>
+              <option value="">— wybierz powłokę —</option>
+              ${powOptions}
+            </select>
+          </div>
+          ${lensTag}
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Dodatki (cena za 1 szt.)</div>
+        <div class="check-grid">${dodatOpts}</div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Promocja</div>
+        <div class="radio-group">${promoOpts}</div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Pakiet usług</div>
+        <div class="radio-group">${ubezOpts}</div>
+      </div>
+
+      <div id="summary-${i}"></div>
+    </div>`;
+}
+
+// ============================================================
+//  KALKULACJA
+// ============================================================
+function calc(s) {
+  const montazCena = MONTAZ_OPCJE.find(m => m.id === s.montaz).cena;
+  const oprawka = parseFloat(s.oprawka) || 0;
+  const socz2 = s.lensCena * 2;
+  const datki2 = Array.from(s.dodatki).reduce((acc, id) => {
+    const d = DODATKI.find(x => x.id === id);
+    return acc + (d ? d.cena * 2 : 0);
+  }, 0);
+
+  const rabatBaza = oprawka + socz2 + datki2; // to co podlega rabacie
+  let poRabacie = 0;
+  let rabatKwota = 0;
+
+  if (s.promocja === 'brak') {
+    poRabacie = montazCena + rabatBaza;
+    rabatKwota = 0;
+  } else if (s.promocja === 'p70') {
+    // 70% rabatu na oprawka+soczewki+dodatki (nie na montaz)
+    poRabacie = montazCena + rabatBaza * 0.30;
+    rabatKwota = rabatBaza * 0.70;
+  } else if (s.promocja === 'p50') {
+    // 50% rabatu tylko na soczewki + dodatki
+    const socz2rabat = (socz2 + datki2) * 0.50;
+    poRabacie = montazCena + oprawka + socz2rabat;
+    rabatKwota = (socz2 + datki2) * 0.50;
+  }
+
+  const ubezSt = UBEZPIECZENIA.find(u => u.id === s.ubezpieczenie).stawka;
+  const ubezKwota = poRabacie * ubezSt;
+  const final = poRabacie + ubezKwota;
+
+  return {
+    montazCena, oprawka, socz2, datki2,
+    rabatBaza, rabatKwota, poRabacie,
+    ubezSt, ubezKwota, final
+  };
+}
+
+// ============================================================
+//  RENDEROWANIE PODSUMOWANIA
+// ============================================================
+function renderSummary(i) {
+  const s = state[i];
+  const el = document.getElementById(`summary-${i}`);
+  if (!el) return;
+
+  const c = calc(s);
+
+  if (c.montazCena === 0 && c.oprawka === 0 && c.socz2 === 0) {
+    el.innerHTML = `<div class="sum-empty">Wypełnij dane, aby zobaczyć cenę</div>`;
+    return;
+  }
+
+  const montazObj = MONTAZ_OPCJE.find(m => m.id === s.montaz);
+  const datki = Array.from(s.dodatki).map(id => DODATKI.find(x => x.id === id));
+
+  let html = `<div class="summary-box">`;
+
+  // Składniki
+  html += `<div class="sum-row"><span>${montazObj.nazwa}</span><span>${fmt(c.montazCena)}</span></div>`;
+  if (c.oprawka > 0) html += `<div class="sum-row"><span>Oprawka</span><span>${fmt(c.oprawka)}</span></div>`;
+  if (c.socz2 > 0) html += `<div class="sum-row"><span>Soczewki (×2)</span><span>${fmt(c.socz2)}</span></div>`;
+  datki.forEach(d => {
+    if (d) html += `<div class="sum-row indent"><span>+ ${d.nazwa} (×2)</span><span>${fmt(d.cena * 2)}</span></div>`;
+  });
+
+  // Rabat
+  if (c.rabatKwota > 0) {
+    const promoNazwa = PROMOCJE.find(p => p.id === s.promocja).nazwa;
+    html += `<hr class="sum-divider">`;
+    html += `<div class="sum-row"><span>Przed rabatem</span><span>${fmt(c.montazCena + c.rabatBaza)}</span></div>`;
+    html += `<div class="sum-row discount"><span>Rabat (${promoNazwa})</span><span>-${fmt(c.rabatKwota)}</span></div>`;
+  }
+
+  // Po rabacie
+  if (c.ubezSt > 0 || c.rabatKwota > 0) {
+    html += `<hr class="sum-divider">`;
+    html += `<div class="sum-row"><span>Po rabacie</span><span>${fmt(c.poRabacie)}</span></div>`;
+  }
+
+  // Ubezpieczenie
+  if (c.ubezKwota > 0) {
+    const ubezNazwa = UBEZPIECZENIA.find(u => u.id === s.ubezpieczenie).nazwa;
+    html += `<div class="sum-row insurance-row"><span>${ubezNazwa}</span><span>+${fmt(c.ubezKwota)}</span></div>`;
+  }
+
+  html += `<hr class="sum-divider">`;
+  html += `<div class="sum-total">
+    <span class="sum-total-label">Do zapłaty</span>
+    <span class="sum-total-price">${fmt(c.final)}</span>
+  </div>`;
+  html += `</div>`;
+
+  el.innerHTML = html;
+}
+
+// ============================================================
+//  OBSŁUGA ZDARZEŃ
+// ============================================================
+function setMontaz(i, id) {
+  state[i].montaz = id;
+  if (id === 'wlasna') state[i].oprawka = 0;
+  rebuildCard(i);
+}
+
+function setOprawka(i, val) {
+  state[i].oprawka = parseFloat(val) || 0;
+  renderSummary(i);
+}
+
+function setLensKat(i, val) {
+  state[i].lensKat = val;
+  state[i].lensPakiet = '';
+  state[i].lensPowloka = '';
+  state[i].lensCena = 0;
+  cleanupDodatki(i);
+  rebuildCard(i);
+}
+
+function setLensPakiet(i, val) {
+  state[i].lensPakiet = val;
+  state[i].lensPowloka = '';
+  state[i].lensCena = 0;
+  cleanupDodatki(i);
+  rebuildCard(i);
+}
+
+function setLensPowloka(i, val) {
+  state[i].lensPowloka = val;
+  if (val && state[i].lensKat && state[i].lensPakiet) {
+    state[i].lensCena = KATALOG[state[i].lensKat].ceny[state[i].lensPakiet][val] || 0;
+  } else {
+    state[i].lensCena = 0;
+  }
+  cleanupDodatki(i);
+  rebuildCard(i);
+}
+
+function toggleDodatek(i, id) {
+  const avail = getDodatekAvailability(i);
+  if (!avail[id]) return; // double-check na wypadek kliknięcia zablokowanego
+  if (state[i].dodatki.has(id)) {
+    state[i].dodatki.delete(id);
+  } else {
+    state[i].dodatki.add(id);
+  }
+  rebuildCard(i); // odświeżenie — przelicza nową dostępność po zmianie
+}
+
+function setPromo(i, id) {
+  state[i].promocja = id;
+  rebuildCard(i);
+}
+
+function setUbez(i, id) {
+  state[i].ubezpieczenie = id;
+  rebuildCard(i);
+}
+
+function rebuildCard(i) {
+  const card = document.getElementById(`card-${i}`);
+  if (!card) return;
+  card.innerHTML = cardHTML(i);
+  renderSummary(i);
+}
+
+function resetAll() {
+  [0, 1, 2].forEach(i => {
+    state[i] = {
+      montaz: MONTAZ_OPCJE[0].id,
+      oprawka: 0,
+      lensKat: '', lensPakiet: '', lensPowloka: '', lensCena: 0,
+      dodatki: new Set(),
+      promocja: 'brak',
+      ubezpieczenie: 'brak',
+    };
+  });
+  buildCards();
+}
+
+// ============================================================
+//  NARZĘDZINY
+// ============================================================
+function fmt(val) {
+  return val.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' zł';
+}
+
+function pl2ascii(str) {
+  return str
+    .replace(/ą/g,'a').replace(/Ą/g,'A')
+    .replace(/ć/g,'c').replace(/Ć/g,'C')
+    .replace(/ę/g,'e').replace(/Ę/g,'E')
+    .replace(/ł/g,'l').replace(/Ł/g,'L')
+    .replace(/ń/g,'n').replace(/Ń/g,'N')
+    .replace(/ó/g,'o').replace(/Ó/g,'O')
+    .replace(/ś/g,'s').replace(/Ś/g,'S')
+    .replace(/ź/g,'z').replace(/Ź/g,'Z')
+    .replace(/ż/g,'z').replace(/Ż/g,'Z');
+}
+
+function nowDate() {
+  return new Date().toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+// ============================================================
+//  GENEROWANIE PDF (window.print — bez zewnętrznych bibliotek)
+// ============================================================
+function generatePDF() {
+  const date = nowDate();
+  const printDiv = document.getElementById('printOnly');
+
+  // Buduj kolumnę dla jednej oferty
+  function buildCol(i) {
+    const s = state[i];
+    const c = calc(s);
+    const montazObj = MONTAZ_OPCJE.find(m => m.id === s.montaz);
+    const datki = Array.from(s.dodatki).map(id => DODATKI.find(x => x.id === id)).filter(Boolean);
+    const baseTotal = montazObj.cena + c.oprawka + c.socz2 + c.datki2;
+
+    let col = `<div class="p-col">
+      <div class="p-col-head">OFERTA ${i + 1}</div>
+      <div class="p-content">`;
+
+    // Montaż
+    col += `<div class="p-sec-head">MONTAŻ</div>
+      <div class="p-row"><span>${montazObj.nazwa}</span><span class="p-val">${fmt(montazObj.cena)}</span></div>`;
+
+    // Oprawka
+    col += `<div class="p-sec-head">OPRAWKA</div>
+      <div class="p-row"><span>Cena oprawki</span><span class="p-val">${c.oprawka > 0 ? fmt(c.oprawka) : '—'}</span></div>`;
+
+    // Soczewki
+    col += `<div class="p-sec-head">SOCZEWKI</div>`;
+    if (s.lensKat && s.lensPakiet && s.lensPowloka) {
+      col += `<div class="p-row p-indent"><span>${s.lensKat}</span></div>
+        <div class="p-row p-indent"><span>${s.lensPakiet} / ${s.lensPowloka}</span></div>
+        <div class="p-row"><span>1 soczewka</span><span class="p-val">${fmt(s.lensCena)}</span></div>
+        <div class="p-row"><span>Para (×2)</span><span class="p-val">${fmt(c.socz2)}</span></div>`;
+    } else {
+      col += `<div class="p-row p-empty">Nie wybrano</div>`;
+    }
+
+    // Dodatki
+    if (datki.length > 0) {
+      col += `<div class="p-sec-head">DODATKI</div>`;
+      datki.forEach(d => {
+        col += `<div class="p-row"><span>${d.nazwa} (×2)</span><span class="p-val">${fmt(d.cena * 2)}</span></div>`;
+      });
+    }
+
+    // Podsumowanie
+    col += `<div class="p-sec-head">PODSUMOWANIE</div>
+      <div class="p-row p-sub"><span>Suma przed rabatem</span><span class="p-val">${fmt(baseTotal)}</span></div>`;
+
+    if (s.promocja !== 'brak') {
+      const promoNazwa = PROMOCJE.find(p => p.id === s.promocja).nazwa;
+      col += `<div class="p-row p-disc"><span>${promoNazwa}</span><span class="p-val">${fmt(c.rabatKwota)}</span></div>`;
+    }
+    if (s.ubezpieczenie !== 'brak') {
+      const ubezNazwa = UBEZPIECZENIA.find(u => u.id === s.ubezpieczenie).nazwa;
+      col += `<div class="p-row p-ins"><span>${ubezNazwa}</span><span class="p-val">${fmt(c.ubezKwota)}</span></div>`;
+    }
+
+    col += `</div>`; // koniec .p-content
+
+    // Cena końcowa – przyklejona na dole kolumny
+    col += `<div class="p-total">
+      <span class="p-total-label">Do zapłaty</span>
+      <span class="p-total-val">${fmt(c.final)}</span>
+    </div>`;
+
+    col += `</div>`;
+    return col;
+  }
+
+  // Tylko oferty z uzupełnionymi soczewkami
+  const complete = [0, 1, 2].filter(i =>
+    state[i].lensKat && state[i].lensPakiet && state[i].lensPowloka
+  );
+
+  if (complete.length === 0) {
+    alert('Brak gotowych ofert. Uzupełnij co najmniej jedną ofertę (rodzaj soczewki, pakiet i powłokę).');
+    return;
+  }
+
+  const cols = complete.map(buildCol).join('');
+  const gridCols = `repeat(${complete.length}, 1fr)`;
+
+  const logoSVG = `<svg viewBox="0 0 197 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M186.319 14.51C190.529 14.51 193.939 17.92 193.939 22.13C193.939 26.34 190.529 29.75 186.319 29.75C182.109 29.75 178.699 26.34 178.699 22.13C178.699 17.92 182.109 14.51 186.319 14.51Z" fill="#E7511E"/>
+    <path d="M24.2595 9.54001H15.8995L7.36953 20.09V0H0.519531V34.51H7.36953V29.13L9.82953 26.3L16.4095 34.51H24.6695L14.1695 21.23L24.2595 9.54001Z" fill="#212529"/>
+    <path d="M46.8604 10.7001C44.7604 9.53007 42.4804 8.94006 40.0104 8.94006C37.5404 8.94006 35.2704 9.53007 33.1804 10.7001C31.0904 11.8701 29.4404 13.4601 28.2304 15.4701C27.0104 17.4801 26.4004 19.6501 26.4004 22.0001C26.4004 24.3501 27.0104 26.5601 28.2304 28.5701C29.4504 30.5801 31.1004 32.1701 33.1804 33.3401C35.2604 34.5101 37.5404 35.1001 40.0104 35.1001C42.4804 35.1001 44.7604 34.5201 46.8604 33.3401C48.9604 32.1701 50.6304 30.5801 51.8604 28.5701C53.0904 26.5601 53.7104 24.3701 53.7104 22.0001C53.7104 19.6301 53.0904 17.4801 51.8604 15.4701C50.6304 13.4601 48.9604 11.8701 46.8604 10.7001ZM45.9904 25.6601C45.3804 26.7601 44.5504 27.6201 43.5004 28.2401C42.4504 28.8701 41.2904 29.1801 40.0104 29.1801C38.7304 29.1801 37.5204 28.8701 36.4704 28.2401C35.4204 27.6201 34.6004 26.7601 34.0004 25.6901C33.4104 24.6101 33.1104 23.3901 33.1104 22.0101C33.1104 20.6301 33.4104 19.5101 34.0204 18.4301C34.6304 17.3501 35.4704 16.5001 36.5304 15.8701C37.6004 15.2501 38.7504 14.9301 40.0004 14.9301C41.2504 14.9301 42.4404 15.2401 43.4904 15.8701C44.5404 16.4901 45.3704 17.3501 45.9804 18.4301C46.5904 19.5101 46.8904 20.7101 46.8904 22.0101C46.8904 23.3101 46.5904 24.5701 45.9804 25.6601H45.9904Z" fill="#212529"/>
+    <path d="M77.7202 12.01C77.0202 11.1 76.0102 10.34 74.6802 9.75C73.3602 9.16 71.8302 8.86002 70.0902 8.86002C67.5002 8.86002 65.2602 9.44001 63.3602 10.6C61.4602 11.76 60.0002 13.33 59.0002 15.33C58.0002 17.32 57.4902 19.54 57.4902 21.97C57.4902 24.4 57.9902 26.62 59.0002 28.61C60.0002 30.61 61.4602 32.18 63.3602 33.34C65.2602 34.5 67.5102 35.07 70.0902 35.07C71.7602 35.07 73.3102 34.76 74.7202 34.14C76.1402 33.52 77.1302 32.81 77.7102 32.02V34.53H84.4702V0.0100098H77.7102V12.02L77.7202 12.01ZM76.1402 27.14C74.9102 28.4 73.2302 29.04 71.1002 29.04C68.9702 29.04 67.3602 28.37 66.1002 27.03C64.8402 25.69 64.2002 24 64.2002 21.96C64.2002 19.92 64.8202 18.15 66.0502 16.82C67.2802 15.49 68.9602 14.83 71.1002 14.83C73.2402 14.83 74.8702 15.49 76.1202 16.82C77.3702 18.15 77.9902 19.86 77.9902 21.96C77.9902 24.06 77.3702 25.88 76.1402 27.14Z" fill="#212529"/>
+    <path d="M108.65 12.0101C107.95 11.1001 106.94 10.3401 105.61 9.75009C104.29 9.16009 102.76 8.86011 101.02 8.86011C98.4299 8.86011 96.1899 9.4401 94.2899 10.6001C92.3899 11.7601 90.9299 13.3301 89.9299 15.3301C88.9199 17.3201 88.4199 19.5401 88.4199 21.9701C88.4199 24.4001 88.9199 26.6201 89.9299 28.6101C90.9299 30.6101 92.3899 32.1801 94.2899 33.3401C96.1899 34.5001 98.4399 35.0701 101.02 35.0701C102.69 35.0701 104.24 34.7601 105.65 34.1401C107.06 33.5201 108.06 32.8101 108.64 32.0201V34.5301H115.4V9.4201H108.64V12.0201L108.65 12.0101ZM107.08 27.1401C105.85 28.4001 104.17 29.0401 102.04 29.0401C99.9099 29.0401 98.2999 28.3701 97.0399 27.0301C95.7799 25.6901 95.1399 24.0001 95.1399 21.9601C95.1399 19.9201 95.7599 18.1501 96.9899 16.8201C98.2199 15.4901 99.8999 14.8301 102.03 14.8301C104.16 14.8301 105.8 15.4901 107.05 16.8201C108.3 18.1501 108.92 19.8601 108.92 21.9601C108.92 24.0601 108.3 25.8801 107.07 27.1401H107.08Z" fill="#212529"/>
+    <path d="M132.811 8.95004C131.651 8.95004 130.451 9.20005 129.201 9.68005C127.951 10.1701 126.921 10.82 126.101 11.64V9.40002H119.301V34.51H126.101V21.22C126.041 18.78 126.511 17.07 127.521 16.08C128.521 15.09 129.651 14.59 130.901 14.59C134.131 14.59 135.741 16.28 135.741 19.66V34.5H142.721V19.66C142.721 16.22 141.941 13.57 140.371 11.72C138.801 9.86003 136.281 8.93005 132.821 8.93005L132.811 8.95004Z" fill="#212529"/>
+    <path d="M171.04 22.1301C171.04 19.9401 171.51 17.8601 172.34 15.9701C172.25 15.8001 172.16 15.6401 172.05 15.4701C170.82 13.4601 169.15 11.8701 167.05 10.7001C164.95 9.53007 162.67 8.94006 160.2 8.94006C157.73 8.94006 155.46 9.53007 153.37 10.7001C151.29 11.8701 149.63 13.4601 148.42 15.4701C147.2 17.4801 146.59 19.6501 146.59 22.0001C146.59 24.3501 147.2 26.5601 148.42 28.5701C149.64 30.5801 151.29 32.1701 153.37 33.3401C155.45 34.5101 157.73 35.1001 160.2 35.1001C162.67 35.1001 164.95 34.5201 167.05 33.3401C169.15 32.1701 170.81 30.5801 172.05 28.5701C172.13 28.4401 172.21 28.3001 172.28 28.1601C171.48 26.3101 171.03 24.2701 171.03 22.1201L171.04 22.1301ZM166.19 25.6601C165.58 26.7601 164.75 27.6201 163.7 28.2401C162.65 28.8601 161.49 29.1801 160.21 29.1801C158.93 29.1801 157.72 28.8701 156.67 28.2401C155.62 27.6201 154.8 26.7701 154.21 25.6901C153.62 24.6101 153.32 23.3901 153.32 22.0101C153.32 20.6301 153.63 19.5101 154.24 18.4301C154.85 17.3501 155.68 16.5001 156.75 15.8701C157.82 15.2501 158.97 14.9301 160.22 14.9301C161.47 14.9301 162.66 15.2401 163.71 15.8701C164.76 16.4901 165.59 17.3501 166.2 18.4301C166.81 19.5101 167.11 20.7001 167.11 22.0101C167.11 23.3101 166.81 24.5701 166.2 25.6601H166.19Z" fill="#212529"/>
+  </svg>`;
+
+  printDiv.innerHTML = `
+    <div class="p-doc">
+      <div class="p-header">
+        <div>
+          ${logoSVG}
+          <div class="p-header-title">Kalkulator Cen Okularów</div>
+        </div>
+        <div class="p-header-right">Data: ${date}</div>
+      </div>
+      <div class="p-grid" style="grid-template-columns:${gridCols};${complete.length === 1 ? 'max-width:45%;' : ''}">${cols}</div>
+      <div class="p-footer">
+        <span>Kodano Optyk – oferta wygenerowana ${date}</span>
+        <span>Ceny katalogowe JörgOptik. Ceny zawierają VAT.</span>
+      </div>
+    </div>`;
+
+  // Drukuj po krótkiej chwili (żeby DOM się zaktualizował)
+  setTimeout(() => window.print(), 120);
+}
+
+// ============================================================
+//  LOGOWANIE
+// ============================================================
+const PASS = 'KodanoOptyk2022*';
+
+function doLogin() {
+  const input = document.getElementById('loginInput');
+  const err   = document.getElementById('loginErr');
+  if (input.value === PASS) {
+    sessionStorage.setItem('auth', '1');
+    document.getElementById('loginScreen').classList.add('hidden');
+    err.textContent = '';
+    input.classList.remove('error');
+  } else {
+    err.textContent = 'Nieprawidłowe hasło. Spróbuj ponownie.';
+    input.classList.add('error');
+    input.value = '';
+    input.focus();
+  }
+}
+
+function toggleLoginEye() {
+  const input = document.getElementById('loginInput');
+  const icon  = document.getElementById('eyeIcon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    input.type = 'password';
+    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+// ============================================================
+//  INICJALIZACJA
+// ============================================================
+document.getElementById('headerDate').textContent = nowDate();
+buildCards();
+[0, 1, 2].forEach(i => renderSummary(i));
+
+// Sprawdź czy użytkownik już się zalogował w tej sesji
+if (sessionStorage.getItem('auth') === '1') {
+  document.getElementById('loginScreen').classList.add('hidden');
+}
+// Ustaw focus na polu hasła
+document.getElementById('loginInput').focus();
+</script>
+</body>
+</html>
