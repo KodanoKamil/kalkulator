@@ -1311,13 +1311,13 @@ function generatePDF() {
 // ============================================================
 //  LOGOWANIE
 // ============================================================
-const PASS = 'KodanoOptyk2022*';
+const PASS = 'KodanoOptyk2026!';
 
 function doLogin() {
   const input = document.getElementById('loginInput');
   const err   = document.getElementById('loginErr');
   if (input.value === PASS) {
-    sessionStorage.setItem('auth', '1');
+    localStorage.setItem('auth', '1');
     document.getElementById('loginScreen').classList.add('hidden');
     err.textContent = '';
     input.classList.remove('error');
@@ -1349,7 +1349,7 @@ buildCards();
 [0, 1, 2].forEach(i => renderSummary(i));
 
 // Sprawdź czy użytkownik już się zalogował w tej sesji
-if (sessionStorage.getItem('auth') === '1') {
+if (localStorage.getItem('auth') === '1') {
   document.getElementById('loginScreen').classList.add('hidden');
 }
 // Ustaw focus na polu hasła
