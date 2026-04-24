@@ -49,6 +49,7 @@ header {
 .header-sub { font-size: 12px; color: var(--gray); margin-top: 1px; }
 .header-right { font-size: 12px; color: var(--gray); }
 .header-date { font-weight: 600; color: var(--dark); }
+.app-version { position: fixed; bottom: 8px; right: 12px; font-size: 10px; color: var(--gray-light); user-select: none; z-index: 100; }
 
 /* Logo SVG */
 .logo-wrap {
@@ -595,6 +596,7 @@ footer {
   </div>
   <div class="header-right">Data: <span class="header-date" id="headerDate"></span></div>
 </header>
+<div class="app-version">v1.10</div>
 
 <div class="main-grid" id="mainGrid"></div>
 <div id="printOnly"></div>
@@ -822,6 +824,10 @@ function getDodatekAvailability(i) {
     // Polaryzacja — tylko Srebrny, Złoty, Platynowy
     if (!['Srebrny','Złoty','Platynowy'].includes(pakiet)) {
       avail['polaryzacja'] = false;
+    }
+    // XTRactive — niedostępne dla Diamentowy
+    if (pakiet === 'Diamentowy') {
+      avail['activetint'] = false;
     }
   }
 
