@@ -597,7 +597,7 @@ footer {
   </div>
   <div class="header-right">Data: <span class="header-date" id="headerDate"></span></div>
 </header>
-<div class="app-version">v1.15</div>
+<div class="app-version">v1.17</div>
 
 <div class="main-grid" id="mainGrid"></div>
 <div id="printOnly"></div>
@@ -1104,6 +1104,11 @@ function renderSummary(i) {
   if (c.ubezKwota > 0) {
     const ubezNazwa = UBEZPIECZENIA.find(u => u.id === s.ubezpieczenie).nazwa;
     html += `<div class="sum-row insurance-row"><span>${ubezNazwa}</span><span>+${fmt(c.ubezKwota)}</span></div>`;
+    if (s.ubezpieczenie === 'bo12' || s.ubezpieczenie === 'bo_gdw') {
+      html += `<div class="sum-row indent" style="font-size:11px;color:var(--gray);font-style:italic">
+        Zniszczenie: <b>${fmt(c.poRabacie * 0.20)}</b> &nbsp;|&nbsp; Zgubienie: <b>${fmt(c.poRabacie * 0.60)}</b>
+      </div>`;
+    }
   }
 
   html += `<hr class="sum-divider">`;
@@ -1282,6 +1287,11 @@ function generatePDF() {
     if (s.ubezpieczenie !== 'brak') {
       const ubezObj = UBEZPIECZENIA.find(u => u.id === s.ubezpieczenie);
       col += `<div class="p-row p-ins"><span>${ubezObj.nazwaPDF}</span><span class="p-val">${fmt(c.ubezKwota)}</span></div>`;
+      if (s.ubezpieczenie === 'bo12' || s.ubezpieczenie === 'bo_gdw') {
+        col += `<div class="p-row" style="font-size:6.5pt;color:#888;font-style:italic;padding-bottom:1mm">
+          <span>Przy zniszczeniu dopłata: <b>${fmt(c.poRabacie * 0.20)}</b> &nbsp;|&nbsp; Przy zgubieniu: <b>${fmt(c.poRabacie * 0.60)}</b></span>
+        </div>`;
+      }
     }
 
     col += `</div>`; // koniec .p-content
