@@ -597,7 +597,7 @@ footer {
   </div>
   <div class="header-right">Data: <span class="header-date" id="headerDate"></span></div>
 </header>
-<div class="app-version">v1.17</div>
+<div class="app-version">v1.18</div>
 
 <div class="main-grid" id="mainGrid"></div>
 <div id="printOnly"></div>
@@ -844,8 +844,10 @@ function getDodatekAvailability(i) {
     if (pakiet === 'Diamentowy') {
       avail['activetint'] = false;
     }
-    // Lustrzanki — całkowicie niedostępne
-    avail['lustrzanki'] = false;
+    // Lustrzanki — niedostępne tylko dla Diamentowy
+    if (pakiet === 'Diamentowy') {
+      avail['lustrzanki'] = false;
+    }
   }
 
   // ── GLOBALNA ZASADA: tylko 1 dodatek naraz (wszystkie kategorie) ──
